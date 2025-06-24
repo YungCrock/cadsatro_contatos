@@ -1,0 +1,48 @@
+/* Estilos para o Navbar */
+.navbar {
+  padding-top: 0.8rem; /* Um pouco mais de padding superior*/
+  padding-bottom: 0.8rem; /* Um pouco mais de padding inferior*/
+  z-index: 1030; /* Garante que o navbar fique acima de outros elementos se for fixo*/
+
+  .navbar-brand {
+    font-family: 'Montserrat', sans-serif; /* Exemplo de fonte mais moderna*/
+    letter-spacing: 0.5px; /* Um pequeno espaçamento entre letras*/
+    .bi {
+      vertical-align: middle; /* Alinha o ícone com o texto*/
+    }
+  }
+
+  .nav-link {
+    font-weight: 500; /* Semibold*/
+    font-size: 1.05rem; /* Levemente maior*/
+    padding: 0.5rem 1rem; /* Ajuste o padding dos links*/
+    transition: all 0.3s ease-in-out; /* Transição suave para hover e active*/
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.8); /* Clareia um pouco no hover*/
+      transform: translateY(-2px); /* Efeito de leve elevação*/
+    }
+
+    &.active {
+      color: var(--bs-warning) !important; /* Usa a cor de alerta/warning do Bootstrap para o ativo*/
+      font-weight: 700; /* Bold*/
+      border-bottom: 2px solid var(--bs-warning); /* Uma borda inferior para indicar ativo*/
+      padding-bottom: calc(0.5rem - 2px); /* Ajusta o padding para compensar a borda*/
+    }
+
+    .bi {
+      vertical-align: middle;
+    }
+  }
+}
+
+/* Sobrescrever variáveis Bootstrap para a cor primária (se você não o fez globalmente)
+// É melhor fazer isso em um arquivo _custom-variables.scss e importar em styles.scss
+// Exemplo (se você quiser mudar a cor primária para um azul mais vivo):
+/*
+:root {
+  --bs-primary: #007bff; // Azul padrão do Bootstrap
+  --bs-primary-rgb: 0, 123, 255;
+  --bs-warning: #ffc107; // Amarelo para o item ativo
+}
+*/

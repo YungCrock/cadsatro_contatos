@@ -1,0 +1,139 @@
+<div class="container py-4">
+  <div class="card shadow-lg p-4 mb-5 bg-white rounded">
+    <div class="card-header bg-primary text-white text-center py-3 rounded-top">
+      <h3 class="mb-0">{{ isEditing ? "Editar Contato" : "Adicionar Novo Contato" }}</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="formGroupContact" (ngSubmit)="save()">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="InputName" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input
+              formControlName="name"
+              type="text"
+              class="form-control"
+              [class.is-invalid]="formGroupContact.get('name')?.invalid && formGroupContact.get('name')?.touched"
+              id="InputName"
+              name="name"
+              placeholder="Digite o nome"
+            />
+            <div *ngIf="formGroupContact.get('name')?.invalid && formGroupContact.get('name')?.touched" class="invalid-feedback">
+              O nome é obrigatório.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="InputLastName" class="form-label">Sobrenome</label>
+            <input
+              formControlName="lastname"
+              type="text"
+              class="form-control"
+              id="InputLastName"
+              name="lastname"
+              placeholder="Digite o sobrenome"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="InputDate" class="form-label">Data de Nascimento</label>
+          <input
+            formControlName="datebirth"
+            type="date" class="form-control"
+            name="datebirth"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="InputCellphone" class="form-label">Celular</label>
+            <input
+              formControlName="cell"
+              type="text"
+              class="form-control"
+              name="cell"
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="InputPhone" class="form-label">Telefone</label>
+            <input
+              formControlName="phone"
+              type="text"
+              class="form-control"
+              name="phone"
+              placeholder="(00) 0000-0000"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="InputEmail" class="form-label">Email</label>
+          <input
+            formControlName="email"
+            type="email" class="form-control"
+            id="InputEmail"
+            name="email"
+            placeholder="exemplo@dominio.com"
+            [class.is-invalid]="formGroupContact.get('email')?.invalid && formGroupContact.get('email')?.touched"
+          />
+          <div *ngIf="formGroupContact.get('email')?.invalid && formGroupContact.get('email')?.touched" class="invalid-feedback">
+              Por favor, insira um e-mail válido.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="InputAddress" class="form-label">Endereço</label>
+          <input
+            formControlName="address"
+            type="text"
+            class="form-control"
+            id="InputAddress"
+            name="address"
+            placeholder="Rua, número, bairro, cidade"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="category" class="form-label">Categoria: <span class="text-danger">*</span></label>
+          <select
+            id="category"
+            formControlName="categoryId"
+            class="form-select" aria-label="Selecione uma categoria"
+            [class.is-invalid]="formGroupContact.get('categoryId')?.invalid && formGroupContact.get('categoryId')?.touched"
+          >
+            <option [ngValue]="null" disabled selected>Selecione uma categoria</option> <option *ngFor="let cat of categories" [ngValue]="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
+          <div
+            *ngIf="formGroupContact.get('categoryId')?.invalid && formGroupContact.get('categoryId')?.touched"
+            class="invalid-feedback"
+          >
+            A categoria é obrigatória.
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="InputNotes" class="form-label">Notas</label>
+          <textarea
+            formControlName="note"
+            class="form-control"
+            id="InputNotes"
+            name="note"
+            rows="3"
+            placeholder="Adicione notas sobre o contato..."
+          ></textarea> </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary me-2" (click)="cancel()">
+            <i class="bi bi-x-circle me-2"></i>Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="formGroupContact.invalid">
+            <i class="bi bi-save me-2"></i>
+            {{ isEditing ? "Atualizar" : "Salvar" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

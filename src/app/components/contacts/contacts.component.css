@@ -1,0 +1,77 @@
+/* Estilos para o Avatar Inicial */
+.initial-avatar {
+  width: 55px; /* Tamanho maior para o avatar */
+  height: 55px;
+  border-radius: 50%; /* Faz um círculo */
+  background-color: var(--bs-primary); /* Use a cor primária do Bootstrap */
+  color: white; /* Texto branco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem; /* Tamanho da fonte das iniciais */
+  font-weight: bold;
+  flex-shrink: 0; /* Garante que não diminua em layouts flex */
+}
+
+/* Estilos para o Card de Contato */
+.contact-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transição suave para hover */
+  &:hover {
+    transform: translateY(-5px); /* Efeito de elevação no hover */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; /* Sombra mais pronunciada no hover */
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem; /* Mais padding interno*/
+  }
+
+  .card-title {
+    font-size: 1.25rem; /* Tamanho maior para o nome*/
+  }
+
+  .card-subtitle {
+    font-size: 0.9rem; /* Tamanho para a categoria*/
+  }
+
+  .contact-details p {
+    font-size: 0.95rem; /* Ajuste o tamanho da fonte para os detalhes*/
+    color: #495057; /* Cor mais escura para os detalhes*/
+  }
+
+  .contact-details i {
+    font-size: 1rem; /* Tamanho dos ícones nos detalhes*/
+  }
+}
+
+/* Ajustes gerais para a lista */
+.row.g-4 {
+  --bs-gutter-x: 1.5rem; /* Aumenta o espaçamento entre colunas */
+  --bs-gutter-y: 1.5rem; /* Aumenta o espaçamento entre linhas */
+}
+
+/* Botões de ícone com cor de destaque */
+.btn-link {
+  color: inherit; /* Mantém a cor do texto padrão do pai */
+  text-decoration: none; /* Remove sublinhado padrão */
+  &:hover {
+    color: var(--bs-primary); /* Altera a cor no hover */
+  }
+}
+
+/* Para ícones de estrela do Bootstrap Icons, ajustar a cor padrão*/
+.bi-star {
+  color: var(--bs-secondary); /* Cor para estrela não preenchida*/
+}
+.bi-star-fill {
+  color: var(--bs-warning); /* Cor para estrela preenchida (amarelo)*/
+}
+
+/* Ajustes no modal */
+.modal-header.bg-danger {
+  border-bottom: none; /* Remover borda se a cor do cabeçalho preencher tudo*/
+}
+.modal-header .btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%); /* Deixa o X branco*/
+}

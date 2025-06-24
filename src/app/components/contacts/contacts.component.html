@@ -1,0 +1,140 @@
+<div class="container py-4">
+  <app-contact
+    *ngIf="showForm"
+    [categories]="categories"
+    [contact]="selectedContact"
+    [isEditing]="isFormEditing"
+    (saveEmitter)="saveContact($event)"
+  ></app-contact>
+
+  <div *ngIf="!showForm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Meus Contatos</h2>
+      <button class="btn btn-primary btn-lg" (click)="create()">
+        <i class="bi bi-plus-circle me-2"></i> Novo Contato
+      </button>
+    </div>
+
+    <div class="mb-4">
+      <input
+        type="text"
+        class="form-control form-control-lg shadow-sm"
+        name="search"
+        id="InputSearch"
+        placeholder="Procurar contatos..."
+        [(ngModel)]="filtro"
+      />
+    </div>
+
+    <div
+      *ngIf="contactsFilter().length === 0"
+      class="alert alert-info text-center mt-5"
+      role="alert"
+    >
+      Nenhum contato encontrado.
+      <a href="#" (click)="create()">Clique aqui para adicionar um novo!</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div
+        class="col"
+        *ngFor="let c of contactsFilter(); trackBy: trackByContact"
+      >
+        <div class="card h-100 shadow-sm border-0 contact-card">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-3">
+              <div class="initial-avatar me-3">
+                {{ c.name.charAt(0).toUpperCase()
+                }}{{ c.lastname ? c.lastname.charAt(0).toUpperCase() : "" }}
+              </div>
+              <div>
+                <h5 class="card-title mb-0 fw-bold">
+                  {{ c.name }} {{ c.lastname }}
+                </h5>
+                <p class="card-subtitle text-muted small" *ngIf="c.category">
+                  {{ c.category.name }}
+                </p>
+              </div>
+              <div class="ms-auto">
+                <button class="btn btn-link p-0" (click)="favorite(c)">
+                  <i
+                    class="bi bi-star-fill"
+                    [class.text-warning]="c.favorite"
+                    [class.text-secondary]="!c.favorite"
+                    style="font-size: 1.5rem"
+                  ></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="contact-details mb-3">
+              <p class="card-text mb-1" *ngIf="c.cell">
+                <i class="bi bi-phone me-2 text-muted"></i>{{ c.cell }}
+              </p>
+              <p class="card-text mb-1" *ngIf="c.email">
+                <i class="bi bi-envelope me-2 text-muted"></i>{{ c.email }}
+              </p>
+              <p class="card-text mb-1" *ngIf="c.phone">
+                <i class="bi bi-telephone me-2 text-muted"></i>{{ c.phone }}
+              </p>
+              <p class="card-text mb-1" *ngIf="c.address">
+                <i class="bi bi-geo-alt me-2 text-muted"></i>{{ c.address }}
+              </p>
+              <p class="card-text mb-1" *ngIf="c.datebirth">
+                <i class="bi bi-calendar me-2 text-muted"></i>
+                {{ c.datebirth | date : "dd/MM/yyyy" }}
+              </p>
+              <p class="card-text mb-1" *ngIf="c.note">
+                <i class="bi bi-sticky me-2 text-muted"></i>{{ c.note }}
+              </p>
+            </div>
+
+            <div class="mt-auto text-end">
+              <button
+                class="btn btn-outline-info btn-sm me-2"
+                (click)="edit(c)"
+              >
+                <i class="bi bi-pencil-square"></i> Editar
+              </button>
+              <button
+                class="btn btn-outline-danger btn-sm"
+                (click)="delete(confirmModal, c)"
+              >
+                <i class="bi bi-trash"></i> Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #confirmModal let-modal>
+    <div class="modal-header bg-danger text-white">
+      <h5 class="modal-title">Confirmar Exclusão</h5>
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        aria-label="Close"
+        (click)="modal.close()"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Deseja realmente remover o contato
+        <strong class="text-danger"
+          >{{ deleteContact?.name }} {{ deleteContact?.lastname }}</strong
+        >?
+      </p>
+      <p class="small text-muted">Esta ação não pode ser desfeita.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-danger" (click)="modal.close(true)">
+        Confirmar Exclusão
+      </button>
+    </div>
+  </ng-template>
+</div>
