@@ -27,8 +27,7 @@ export class FavoritesComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private contactService: ContactService,
-    private modalService: NgbModal
+    private contactService: ContactService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +38,6 @@ export class FavoritesComponent implements OnInit {
   loadContacts() {
     this.contactService.getFavorite().subscribe({
       next: (data) => {
-        // Ordena os contatos por nome em ordem alfabética (case-insensitive)
         this.contacts = data.sort((a, b) => {
           const nameA = a.name.toLowerCase();
           const nameB = b.name.toLowerCase();
@@ -67,22 +65,15 @@ export class FavoritesComponent implements OnInit {
   }
 
   favorite(contact: Contact): void {
-    // Inverte o estado do favorito localmente para feedback imediato (otimista)
     contact.favorite = !contact.favorite;
-
-    // Chama o serviço do Angular para atualizar no backend
-    this.contactService.updateFavorite(contact.id!) // Use ! para afirmar que id não é nulo/indefinido
+    this.contactService.updateFavorite(contact.id!)
       .subscribe({
         next: () => {
           console.log('Favorito atualizado no backend com sucesso!');
-          // Se o backend retornasse o objeto atualizado, você poderia atribuí-lo aqui.
-          // Como ele retorna noContent, assumimos que a UI já está atualizada otimisticamente.
         },
         error: (error) => {
           console.error('Erro ao atualizar favorito no backend:', error);
-          // Em caso de erro, você pode querer reverter o estado local do favorito
-          contact.favorite = !contact.favorite; // Reverte para o estado anterior
-          // Exibir mensagem de erro para o usuário (toast, etc.)
+          contact.favorite = !contact.favorite;
         }
       });
   }
@@ -97,7 +88,7 @@ export class FavoritesComponent implements OnInit {
         contact.name.toLowerCase().includes(lowerCaseFiltro) ||
         contact.lastname.toLowerCase().includes(lowerCaseFiltro) ||
         contact.cell?.toLowerCase().includes(lowerCaseFiltro) ||
-        contact.category?.name?.toLowerCase().includes(lowerCaseFiltro) // Adicionado '?' para category.name
+        contact.category?.name?.toLowerCase().includes(lowerCaseFiltro)
     );
   }
 

@@ -1,5 +1,3 @@
-// contact.component.ts (COM AS CORREÇÕES E MELHORIAS)
-
 import {
   Component,
   EventEmitter,
@@ -33,63 +31,68 @@ export class ContactComponent implements OnInit, OnChanges {
       id: [null],
       name: ['', Validators.required],
       lastname: [''],
-      datebirth: [null], // Valor inicial pode ser null, esperando um Date object
+      datebirth: [null],
       cell: [''],
       phone: [''],
       email: ['', [Validators.email]],
       address: [''],
-      categoryId: [null, Validators.required], // Categoria é obrigatória no formulário
+      categoryId: [null, Validators.required],
       note: [''],
       favorite: [false],
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Reage a mudanças no Input 'contact' para preencher o formulário
     if (changes['contact'] && changes['contact'].currentValue) {
       this.patchFormWithContact();
     }
   }
 
   ngOnInit(): void {
-    // Se o componente já é carregado com um contato para edição, preenche o formulário.
-    // ngOnChanges lida com atualizações subsequentes.
     if (this.isEditing && this.contact && this.contact.id) {
       this.patchFormWithContact();
     }
   }
 
   private patchFormWithContact(): void {
-  let parsedDatebirth: Date | null = null;
+    let parsedDatebirth: Date | null = null;
 
-  if (this.contact.datebirth !== undefined && this.contact.datebirth !== null) { // Adicionado verificação de undefined/null
-    if (typeof this.contact.datebirth === 'string') {
-      const dateString = this.contact.datebirth;
-      const parts = dateString.split('/'); // <<-- AGORA DEVE FUNCIONAR SEM 'never'
-      if (parts.length === 3) {
-        parsedDatebirth = new Date(
-          Number(parts[2]),
-          Number(parts[1]) - 1,
-          Number(parts[0])
-        );
-      } else {
-        parsedDatebirth = new Date(dateString);
-      }
-      if (isNaN(parsedDatebirth.getTime())) {
-        console.warn('Data de nascimento inválida recebida (string):', dateString);
-        parsedDatebirth = null;
-      }
-    } else if (this.contact.datebirth instanceof Date) {
-      parsedDatebirth = this.contact.datebirth;
-      if (isNaN(parsedDatebirth.getTime())) {
-          console.warn('Data de nascimento inválida recebida (Date object):', this.contact.datebirth);
+    if (
+      this.contact.datebirth !== undefined &&
+      this.contact.datebirth !== null
+    ) {
+      if (typeof this.contact.datebirth === 'string') {
+        const dateString = this.contact.datebirth;
+        const parts = dateString.split('/');
+        if (parts.length === 3) {
+          parsedDatebirth = new Date(
+            Number(parts[2]),
+            Number(parts[1]) - 1,
+            Number(parts[0])
+          );
+        } else {
+          parsedDatebirth = new Date(dateString);
+        }
+        if (isNaN(parsedDatebirth.getTime())) {
+          console.warn(
+            'Data de nascimento inválida recebida (string):',
+            dateString
+          );
           parsedDatebirth = null;
-      }
-    } else {
-        // Fallback para outros tipos inesperados ou para quando é apenas null
+        }
+      } else if (this.contact.datebirth instanceof Date) {
+        parsedDatebirth = this.contact.datebirth;
+        if (isNaN(parsedDatebirth.getTime())) {
+          console.warn(
+            'Data de nascimento inválida recebida (Date object):',
+            this.contact.datebirth
+          );
+          parsedDatebirth = null;
+        }
+      } else {
         parsedDatebirth = null;
+      }
     }
-  }
 
     this.formGroupContact.patchValue({
       id: this.contact.id ?? null,
@@ -111,15 +114,20 @@ export class ContactComponent implements OnInit, OnChanges {
       const formValue = this.formGroupContact.value;
 
       let datebirthForBackend: string | undefined = undefined;
-      if (formValue.datebirth instanceof Date && !isNaN(formValue.datebirth.getTime())) {
+      if (
+        formValue.datebirth instanceof Date &&
+        !isNaN(formValue.datebirth.getTime())
+      ) {
         datebirthForBackend = formValue.datebirth.toISOString().split('T')[0];
-      } else if (typeof formValue.datebirth === 'string' && formValue.datebirth.trim() !== '') {
+      } else if (
+        typeof formValue.datebirth === 'string' &&
+        formValue.datebirth.trim() !== ''
+      ) {
         datebirthForBackend = formValue.datebirth;
       }
 
-      // Converte categoryId para um objeto Category, se existir
       const categoryObject: Category | undefined = formValue.categoryId
-        ? ({ id: formValue.categoryId, name: '' } as Category) // 'name' é necessário para a interface, mas pode ser vazio
+        ? ({ id: formValue.categoryId, name: '' } as Category)
         : undefined;
 
       const contatoParaBackend: Contact = {
@@ -129,19 +137,23 @@ export class ContactComponent implements OnInit, OnChanges {
         cell: formValue.cell ?? undefined,
         phone: formValue.phone ?? undefined,
         email: formValue.email ?? undefined,
-        datebirth: datebirthForBackend, // Já pode ser string ou undefined
+        datebirth: datebirthForBackend,
         address: formValue.address ?? undefined,
         note: formValue.note ?? undefined,
         favorite: formValue.favorite ?? false,
-        category: categoryObject, // Atribui o objeto Category ou undefined
+        category: categoryObject,
       };
 
-      console.log('Objeto Contact COMPLETO E FORMATADO para EMISSÃO:', contatoParaBackend);
+      console.log(
+        'Objeto Contact COMPLETO E FORMATADO para EMISSÃO:',
+        contatoParaBackend
+      );
       this.saveEmitter.emit(contatoParaBackend);
-
     } else {
       this.formGroupContact.markAllAsTouched();
-      console.error('Formulário inválido. Por favor, preencha os campos obrigatórios.');
+      console.error(
+        'Formulário inválido. Por favor, preencha os campos obrigatórios.'
+      );
     }
   }
 

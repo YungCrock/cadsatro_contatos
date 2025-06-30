@@ -1,5 +1,3 @@
-// contacts.component.ts (COM AS CORREÇÕES E MELHORIAS)
-
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Category } from '../../interfaces/Category';
 import { Contact } from '../../interfaces/Contact';
@@ -19,7 +17,7 @@ export class ContactsComponent implements OnInit {
   selectedContact: Contact = {} as Contact;
   showForm: boolean = false;
   isEditing: boolean = false;
-  isFormEditing: boolean = false; // Parece redundante com isEditing, mas mantido se tiver um uso específico
+  isFormEditing: boolean = false;
   deleteContact: Contact = {} as Contact;
   filtro: string = '';
 
@@ -38,14 +36,14 @@ export class ContactsComponent implements OnInit {
   loadContacts() {
     this.contactService.getContacts().subscribe({
       next: (data) => {
-        console.log('Dados recebidos do backend (loadContacts - RAW):', data); // Verifique os dados brutos
+        console.log('Dados recebidos do backend (loadContacts - RAW):', data);
         this.contacts = data
           .map((contact) => {
             let parsedDatebirth: Date | undefined = undefined;
             if (contact.datebirth) {
               if (typeof contact.datebirth === 'string') {
                 const dateString = contact.datebirth;
-                const parts = dateString.split('/'); // Tenta formato DD/MM/AAAA
+                const parts = dateString.split('/');
                 if (parts.length === 3) {
                   parsedDatebirth = new Date(
                     Number(parts[2]),
@@ -53,33 +51,31 @@ export class ContactsComponent implements OnInit {
                     Number(parts[0])
                   );
                 } else {
-                  // Assume ISO 8601 (YYYY-MM-DD) ou outro que Date() entenda
                   parsedDatebirth = new Date(dateString);
                 }
                 if (isNaN(parsedDatebirth.getTime())) {
-                  console.warn('Data de nascimento inválida ao carregar:', dateString);
+                  console.warn(
+                    'Data de nascimento inválida ao carregar:',
+                    dateString
+                  );
                   parsedDatebirth = undefined;
                 }
               } else if (contact.datebirth instanceof Date) {
                 parsedDatebirth = contact.datebirth;
-              } else if (contact.datebirth === null) { // Explicitly handle null
+              } else if (contact.datebirth === null) {
                 parsedDatebirth = undefined;
               }
             }
-            // Retorna um novo objeto Contact com a data convertida
-            // Assegure que as propriedades opcionais que podem vir como null sejam tratadas como undefined,
-            // ou mapeadas para seus tipos corretos
             return {
               ...contact,
               datebirth: parsedDatebirth,
-              category: contact.category ? { ...contact.category } : undefined, // Cria cópia ou undefined/null
-              // Garanta que outras propriedades também são tratadas para evitar null na interface
+              category: contact.category ? { ...contact.category } : undefined,
               cell: contact.cell || undefined,
               phone: contact.phone || undefined,
               email: contact.email || undefined,
               address: contact.address || undefined,
               note: contact.note || undefined,
-              favorite: contact.favorite ?? false // Use ?? para booleanos para lidar com null/undefined
+              favorite: contact.favorite ?? false,
             } as Contact;
           })
           .sort((a, b) => {
@@ -90,7 +86,10 @@ export class ContactsComponent implements OnInit {
             return 0;
           });
         this.cdr.detectChanges();
-        console.log('this.contacts após conversão e ordenação (loadContacts):', this.contacts);
+        console.log(
+          'this.contacts após conversão e ordenação (loadContacts):',
+          this.contacts
+        );
       },
       error: (error) => {
         console.error('Erro ao carregar contatos:', error);
@@ -109,7 +108,7 @@ export class ContactsComponent implements OnInit {
     });
   }
 
-  trackByContact(index: number, contact: Contact): number | undefined { // ID pode ser undefined
+  trackByContact(index: number, contact: Contact): number | undefined {
     return contact.id;
   }
 
@@ -117,19 +116,18 @@ export class ContactsComponent implements OnInit {
     console.log('saveContact - Recebido contact:', contact);
     console.log('saveContact - this.isEditing:', this.isEditing);
 
-    if (contact) { // Verifica se 'contact' não é undefined (cancelamento)
-      console.log('saveContact - Contact é válido, procedendo com save/update.');
+    if (contact) {
+      console.log(
+        'saveContact - Contact é válido, procedendo com save/update.'
+      );
       if (this.isEditing) {
         console.log('saveContact - Modo Edição.');
-        // Certifique-se de que contact.id é um número antes de chamar update
         if (contact.id !== undefined && contact.id !== null) {
           this.contactService.update(contact).subscribe({
             next: () => {
               const index = this.contacts.findIndex((c) => c.id === contact.id);
               if (index !== -1) {
-                // Atualize o objeto na lista com uma nova referência para garantir detecção de mudança
                 this.contacts[index] = { ...contact };
-                // Reordene a lista após a atualização
                 this.contacts.sort((a, b) => {
                   const nameA = a.name.toLowerCase();
                   const nameB = b.name.toLowerCase();
@@ -140,19 +138,23 @@ export class ContactsComponent implements OnInit {
                 this.cdr.detectChanges();
                 console.log('Contato atualizado com sucesso na lista!');
               } else {
-                console.warn('Contato atualizado não encontrado na lista local. Recarregando todos os contatos...');
-                this.loadContacts(); // Recarregue se não encontrar para garantir consistência
+                console.warn(
+                  'Contato atualizado não encontrado na lista local. Recarregando todos os contatos...'
+                );
+                this.loadContacts();
               }
               this.resetFormState();
             },
             error: (error) => {
               console.error('Erro ao atualizar contato:', error);
               this.resetFormState();
-            }
+            },
           });
         } else {
-            console.error('Erro: ID do contato para atualização é undefined ou null.');
-            this.resetFormState();
+          console.error(
+            'Erro: ID do contato para atualização é undefined ou null.'
+          );
+          this.resetFormState();
         }
       } else {
         console.log('saveContact - Modo Novo Contato.');
@@ -166,14 +168,14 @@ export class ContactsComponent implements OnInit {
               if (nameA > nameB) return 1;
               return 0;
             });
-            this.cdr.detectChanges(); // Força detecção de mudanças para o *ngFor
+            this.cdr.detectChanges();
             console.log('Novo contato salvo e adicionado à lista!');
             this.resetFormState();
           },
           error: (error) => {
             console.error('Erro ao salvar novo contato:', error);
             this.resetFormState();
-          }
+          },
         });
       }
     } else {
@@ -183,74 +185,71 @@ export class ContactsComponent implements OnInit {
   }
 
   create() {
-    this.selectedContact = {} as Contact; // Garante que é um objeto limpo para criação
+    this.selectedContact = {} as Contact;
     this.isEditing = false;
     this.isFormEditing = false;
     this.showForm = true;
   }
 
   edit(contact: Contact) {
-    this.selectedContact = { ...contact }; // Crie uma cópia para não alterar o objeto na lista diretamente
+    this.selectedContact = { ...contact };
     this.isEditing = true;
     this.isFormEditing = true;
     this.showForm = true;
   }
 
   delete(modal: any, contact: Contact) {
-  this.deleteContact = contact;
-  this.modalService
-    .open(modal)
-    .result.then((confirm) => {
-      if (confirm) {
-        // VERIFICAÇÃO E CORREÇÃO AQUI
-        if (contact.id !== undefined && contact.id !== null) { // Garante que o ID existe
-          // The line below is causing the error because contact.id (number) is passed,
-          // but the service's delete method expects 'Contact' based on the error message.
-          // This implies the problem is in the service's method signature.
-          this.contactService.delete(contact.id).subscribe({ // <<< PASSE contact.id
-            next: () => {
-              this.contacts = this.contacts.filter((c) => c.id !== contact.id);
-              this.contacts.sort((a, b) => {
-                const nameA = a.name.toLowerCase();
-                const nameB = b.name.toLowerCase();
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
-              });
-              this.cdr.detectChanges();
-              console.log('Contato excluído e removido da lista!');
-            },
-            error: (error) => {
-              console.error('Erro ao excluir contato:', error);
-            },
-          });
-        } else {
-            console.error('Não foi possível excluir: ID do contato é inválido.');
+    this.deleteContact = contact;
+    this.modalService
+      .open(modal)
+      .result.then((confirm) => {
+        if (confirm) {
+          if (contact.id !== undefined && contact.id !== null) {
+            this.contactService.delete(contact.id).subscribe({
+              next: () => {
+                this.contacts = this.contacts.filter(
+                  (c) => c.id !== contact.id
+                );
+                this.contacts.sort((a, b) => {
+                  const nameA = a.name.toLowerCase();
+                  const nameB = b.name.toLowerCase();
+                  if (nameA < nameB) return -1;
+                  if (nameA > nameB) return 1;
+                  return 0;
+                });
+                this.cdr.detectChanges();
+                console.log('Contato excluído e removido da lista!');
+              },
+              error: (error) => {
+                console.error('Erro ao excluir contato:', error);
+              },
+            });
+          } else {
+            console.error(
+              'Não foi possível excluir: ID do contato é inválido.'
+            );
+          }
         }
-      }
-    })
-    .catch(() => {
-      console.log('Exclusão cancelada.');
-    });
-}
+      })
+      .catch(() => {
+        console.log('Exclusão cancelada.');
+      });
+  }
 
   favorite(contact: Contact): void {
-    // Cria uma cópia do contato para a atualização e para reverter em caso de erro
     const updatedContact = { ...contact, favorite: !contact.favorite };
     if (updatedContact.id !== undefined && updatedContact.id !== null) {
       this.contactService.updateFavorite(updatedContact.id).subscribe({
         next: () => {
-          // Atualiza o objeto original na lista apenas após sucesso
           contact.favorite = updatedContact.favorite;
           console.log('Favorito atualizado no backend com sucesso!');
         },
         error: (error) => {
           console.error('Erro ao atualizar favorito no backend:', error);
-          // contact.favorite = !contact.favorite; // Reverte o estado visual apenas
         },
       });
     } else {
-        console.error('Erro: ID do contato para favoritar é undefined ou null.');
+      console.error('Erro: ID do contato para favoritar é undefined ou null.');
     }
   }
 
@@ -264,7 +263,7 @@ export class ContactsComponent implements OnInit {
         contact.name.toLowerCase().includes(lowerCaseFiltro) ||
         contact.lastname.toLowerCase().includes(lowerCaseFiltro) ||
         contact.cell?.toLowerCase().includes(lowerCaseFiltro) ||
-        contact.category?.name?.toLowerCase().includes(lowerCaseFiltro) // Adicionado '?' para category.name
+        contact.category?.name?.toLowerCase().includes(lowerCaseFiltro)
     );
   }
 
@@ -273,6 +272,6 @@ export class ContactsComponent implements OnInit {
     this.showForm = false;
     this.isEditing = false;
     this.isFormEditing = false;
-    this.filtro = ''; // Opcional: limpar o filtro ao fechar o formulário
+    this.filtro = '';
   }
 }

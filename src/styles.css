@@ -1,8 +1,2 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap-icons/font/bootstrap-icons.css";
-
-:root {
-  --bs-primary: #007bff;
-  --bs-primary-rgb: 0, 123, 255;
-  --bs-warning: #ffc107;
-}

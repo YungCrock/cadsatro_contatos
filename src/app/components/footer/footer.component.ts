@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './footer.component.css'
 })
 export class FooterComponent implements OnInit {
-  title = 'my-contacts-app'; // Ou o nome do seu app
+  title = 'my-contacts-app';
   currentYear: number = 0;
 
   ngOnInit() {
