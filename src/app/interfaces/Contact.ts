@@ -9,7 +9,7 @@ export interface Contact {
   email?: string;
   datebirth?: Date | string | null;
   address?: string;
-  category: Category;
+  category?: Category;
   note?: string;
   favorite?: boolean;
 }
