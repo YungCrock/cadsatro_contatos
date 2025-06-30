@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class CategoryService {
 
-  apiUrl = "http://localhost:8080/categories";
+  apiUrl = "https://enzoaguiar.duckdns.org/categories";
 
   categories: Category[] = []
 

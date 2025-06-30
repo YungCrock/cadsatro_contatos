@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ContactService {
-  apiUrl = 'http://localhost:8080/contacts';
+  apiUrl = "https://enzoaguiar.duckdns.org/contacts";
 
   constructor(private http: HttpClient) {}
 
