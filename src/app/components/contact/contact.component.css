@@ -57,3 +57,45 @@ textarea.form-control {
 .container {
   max-width: 800px; /* Limitar a largura do formulário em telas grandes*/
 }
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .d-flex.justify-content-end {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .me-2 {
+    margin-right: 0 !important;
+  }
+
+  .row .col-md-6 {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .form-control,
+  .form-select {
+    padding: 0.65rem 0.9rem;
+  }
+
+  .card {
+    box-shadow: none; /* Menos sombra em telas pequenas */
+  }
+
+  .card-header {
+    padding: 1rem 0.5rem;
+  }
+
+  .card-body {
+    padding: 1rem 0.5rem;
+  }
+}
